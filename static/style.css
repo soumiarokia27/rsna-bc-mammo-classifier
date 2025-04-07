@@ -1,0 +1,100 @@
+/* Import Google Fonts defined in HTML */
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+}
+
+/* Subtle Floral Accent Example (using pseudo-elements or background) */
+/* Add a subtle pattern to the sidebar or background */
+/* body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('path/to/your/subtle-floral-pattern.png');
+    background-repeat: repeat;
+    opacity: 0.03;
+    z-index: -1;
+} */
+
+/* Drag Area Hover Effect */
+#drop-area.highlight {
+    border-color: #F8B4C4; /* primary */
+    background-color: #FFF0F5; /* bg-soft */
+    transform: scale(1.01);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07); /* shadow-soft-lg */
+}
+
+/* Flower Loading Animation */
+.flower-loader {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    border: 3px solid;
+    border-color: #FFD1DC #FFD1DC transparent transparent; /* primary-light */
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+.flower-loader::after,
+.flower-loader::before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    border: 3px solid;
+    border-color: transparent transparent #F8B4C4 #F8B4C4; /* primary */
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    animation: rotationBack 0.5s linear infinite;
+    transform-origin: center center;
+}
+.flower-loader::before {
+    width: 40px;
+    height: 40px;
+    border-color: #E6E6FA #E6E6FA transparent transparent; /* secondary-light */
+    animation: rotation 1.5s linear infinite;
+}
+
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@keyframes rotationBack {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
+
+/* Tooltip Styling */
+/* Base styling is done with Tailwind, this can be used for overrides if needed */
+
+/* Ensure smooth transitions */
+* {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+/* Button focus states for accessibility */
+button:focus-visible, input[type="file"]:focus-visible + label span {
+     outline: 2px solid #4B0082; /* text-dark */
+     outline-offset: 2px;
+     box-shadow: 0 0 0 3px rgba(230, 230, 250, 0.6); /* secondary-light with opacity */
+}
+
+/* Responsive adjustments if needed beyond Tailwind */
+@media (max-width: 1024px) {
+    /* Example: Adjust sidebar behavior on smaller screens */
+    aside {
+        /* Add specific styles for tablet/mobile sidebar if needed */
+    }
+}
