@@ -1,7 +1,5 @@
+```
 # rsna-bc-mammo-classifier
-Here's a professional and visually appealing `README.md` for your GitHub repository based on the provided Jupyter notebook:
-
-```markdown
 # RSNA Mammographic Image Classification: Binary (B vs C)
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
