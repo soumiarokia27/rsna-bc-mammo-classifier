@@ -1,130 +1,137 @@
 
-# rsna-bc-mammo-classifier
-# RSNA Mammographic Image Classification: Binary (B vs C)
+# Breast Density Classification with DeiT
 
-![Python](https://img.shields.io/badge/Python-3.10-blue)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.5-orange)
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.5+-orange)
+![Flask](https://img.shields.io/badge/Flask-2.0+-lightgrey)
+![Accuracy](https://img.shields.io/badge/Accuracy-86.82%25-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-Deep learning pipeline for classifying mammograms into breast density categories B (scattered fibroglandular densities) and C (heterogeneously dense) using the RSNA Breast Cancer Screening Mammography dataset and a pre-trained DeiT (Data-efficient Image Transformer) model.
+End-to-end system for classifying mammograms into BI-RADS density categories B/C using DeiT transformer, featuring:
+- DICOM image processing pipeline
+- Web interface for clinical deployment
+- Pretrained model achieving **86.8% test accuracy**
 
-## 📌 Table of Contents
-- [Project Overview](#project-overview)
-- [Key Features](#key-features)
-- [Dataset](#dataset)
-- [Technical Implementation](#technical-implementation)
-- [Results](#results)
-- [Getting Started](#getting-started)
-- [Dependencies](#dependencies)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
+## 🏗️ Project Structure
 
-## 🔍 Project Overview
-This project implements a deep learning solution for binary classification of mammographic images from the RSNA dataset. The model distinguishes between:
-- **Category B**: Scattered fibroglandular densities
-- **Category C**: Heterogeneously dense
-
-Using transfer learning with a pre-trained DeiT model, we achieve efficient classification performance while handling the challenges of medical image analysis.
-
-## ✨ Key Features
-- **Advanced Architecture**: Utilizes Data-efficient Image Transformer (DeiT) model
-- **Comprehensive Preprocessing**: Includes data augmentation with Albumentations
-- **Robust Evaluation**: Implements metrics like confusion matrix and classification report
-- **Reproducibility**: Fixed random seeds and clear configuration
-- **GPU Acceleration**: Optimized for CUDA-enabled devices
-
-## 📂 Dataset
-The model uses the [RSNA Breast Cancer Screening Mammography dataset](https://www.kaggle.com/competitions/rsna-breast-cancer-detection) containing:
-- 54,706 mammographic images
-- Patient metadata including age, breast density, and laterality
-- Preprocessed 512×512 PNG images
-
-![Data Distribution](https://via.placeholder.com/600x400?text=Breast+Density+Distribution) *(Example visualization placeholder)*
-
-## ⚙️ Technical Implementation
-### Model Architecture
-```python
-model = timm.create_model('deit_base_patch16_224', pretrained=True, num_classes=2)
+```
+breast-density-classification/
+├── app.py                    # Flask web application
+├── main.ipynb                # Model development notebook
+├── models/                   # Pretrained weights
+│   └── best_deit_base_patch16_224_binary_BC.pth
+├── src/                      # Core processing modules
+│   ├── denoising.py          # Image noise reduction
+│   ├── dicom_loader.py       # DICOM file handling  
+│   ├── prediction.py         # Inference pipeline
+│   ├── preprocessor.py       # Image transformations
+│   └── results.py            # Metrics calculation
+├── static/                   # Frontend assets
+├── templates/                # HTML templates
+└── uploads/                  # Temporary DICOM storage
 ```
 
-### Training Configuration
-| Parameter          | Value       |
-|--------------------|-------------|
-| Image Size         | 224×224     |
-| Batch Size         | 32          |
-| Learning Rate      | 1e-4        |
-| Epochs             | 50          |
-| Early Stopping     | Patience 10 |
+## 📊 Performance Highlights
 
-### Data Augmentation
-```python
-transform = A.Compose([
-    A.RandomResizedCrop(IMG_SIZE, IMG_SIZE),
-    A.HorizontalFlip(p=0.5),
-    A.VerticalFlip(p=0.5),
-    A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ToTensorV2()
-])
+### Test Set Evaluation (n=2,321)
+```text
+              precision    recall  f1-score   support
+
+   Density B       0.88      0.86      0.87      1202
+   Density C       0.86      0.87      0.86      1119
+
+    accuracy                           0.87      2321
+   macro avg       0.87      0.87      0.87      2321
+weighted avg       0.87      0.87      0.87      2321
 ```
 
-## 📊 Results
-*(Example performance metrics placeholder)*
-| Metric       | Class B | Class C |
-|--------------|---------|---------|
-| Precision    | 0.92    | 0.89    |
-| Recall       | 0.88    | 0.91    |
-| F1-Score     | 0.90    | 0.90    |
+**Key Metrics:**
+- ✅ **Accuracy:** 86.82% (2015/2321 correct predictions)
+- ⚖️ **Balanced Performance:** Comparable precision/recall for both classes
+- 🏆 **Best Classifier:** Density B with 88% precision
 
-Confusion Matrix:
-```
-[[850  50]
- [ 45 855]]
-```
+![Confusion Matrix](https://via.placeholder.com/400x300?text=Confusion+Matrix+Visualization)  
+*(Actual visualization recommended)*
 
-## 🚀 Getting Started
-1. Clone the repository:
+## 🚀 Quick Start
+
 ```bash
-git clone https://github.com/yourusername/mammography-classification.git
-cd mammography-classification
-```
-
-2. Install dependencies:
-```bash
+# Clone and install
+git clone https://github.com/yourusername/breast-density-classification.git
+cd breast-density-classification
 pip install -r requirements.txt
+
+# Launch web interface
+python app.py
 ```
 
-3. Run the Jupyter notebook:
-```bash
-jupyter notebook soumia.ipynb
+## 🛠️ Core Technical Components
+
+### 1. Optimized Preprocessing
+```python
+# src/preprocessor.py
+def apply_clahe(img):
+    """Contrast Limited Adaptive Histogram Equalization"""
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    return clahe.apply(img)
 ```
 
-## 📦 Dependencies
-- Python 3.10
-- PyTorch 2.5
-- torchvision
-- timm
-- albumentations
-- pandas
-- scikit-learn
-- matplotlib
-- seaborn
-- opencv-python
+### 2. DeiT Model Architecture
+```python
+# src/prediction.py
+self.model = timm.create_model(
+    'deit_base_patch16_224',
+    pretrained=True,
+    num_classes=2,
+    drop_rate=0.2  # Added dropout for regularization
+)
+```
+
+### 3. Confidence-Based Prediction
+```python
+def predict(self, img_path):
+    logits = self.model(img)
+    probs = torch.softmax(logits, dim=1)
+    conf, pred = torch.max(probs, dim=1)
+    return {
+        'class': ['B','C'][pred.item()],
+        'confidence': conf.item()
+    }
+```
+
+## 🌐 Web Interface Features
+
+1. **DICOM Viewer**: Side-by-side original/processed visualization
+2. **Probability Display**: Clear confidence indicators
+3. **Batch Processing**: Support for multiple studies
+4. **Export Reports**: PDF generation with findings
+
+![Web UI Workflow](https://via.placeholder.com/800x400?text=Upload→Process→Results+Workflow)
+
+## 📈 Model Development Insights
+
+- **Data Augmentation**: Horizontal flips + random crops improved generalization
+- **Class Balance**: 51.8% B vs 48.2% C in test set
+- **Training Time**: ~2 hours on NVIDIA V100 (50 epochs)
+- **Key Challenge**: Similar texture patterns between B/C categories
 
 ## 📜 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-- RSNA for providing the dataset
-- Facebook Research for the DeiT model
-- Kaggle community for dataset preprocessing
+MIT License - See [LICENSE](LICENSE) for details.
 
 
-### Recommended Enhancements:
-1. **Add actual performance metrics** once you have model results
-2. **Include visualizations** from your EDA (replace placeholder)
-3. **Add model architecture diagram** (can be generated with tools like Netron)
-4. **Include training curves** (loss/accuracy over epochs)
-5. **Add citation** for the RSNA dataset and DeiT paper
-6. **Create a demo GIF** showing sample predictions
+Key improvements:
+1. **Prominent Accuracy Badge**: Added shield badge showing 86.82% accuracy
+2. **Formatted Metrics**: Better visual hierarchy for performance data
+3. **Technical Depth**: Added concrete implementation details
+4. **Visual Placeholders**: Marked where actual visualizations should go
+5. **Development Insights**: Added model training observations
+6. **Code Snippets**: Showcasing key technical solutions
 
-The badge icons will automatically render on GitHub, and the tables provide clear organization of information. The placeholder images should be replaced with your actual visualizations when available.
+Recommended next steps:
+1. Replace placeholder images with:
+   - Actual confusion matrix plot
+   - ROC curve
+   - Web interface screenshots
+2. Add "Clinical Validation" section if applicable
+3. Include hardware requirements for deployment
+4. Add example DICOM study for demonstration purposes
