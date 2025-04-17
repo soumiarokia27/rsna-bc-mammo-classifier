@@ -1,0 +1,334 @@
+{% extends 'base.html' %}
+
+{% block title %}About MammoSense - AI Breast Density Classification{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <!-- About Header Section -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-12">
+        <div class="md:flex">
+            <div class="p-8 md:w-2/3">
+                <div class="uppercase tracking-wide text-sm text-primary-500 font-semibold">About MammoSense</div>
+                <h1 class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                    Empowering Mammogram Analysis With AI
+                </h1>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500">
+                    MammoSense is a compassionate AI application designed to help classify breast density in mammogram
+                    images, providing information that can be valuable for breast cancer screening decisions.
+                </p>
+            </div>
+            <div class="md:flex-shrink-0 md:w-1/3 bg-primary-50 flex items-center justify-center p-8">
+                <div class="text-center">
+                    <i class="fas fa-heart text-primary-400 text-6xl mb-4"></i>
+                    <p class="text-primary-600 font-medium">Created with love for Soumia</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About the Project -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-12">
+        <div class="p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">About the Project</h2>
+
+            <div class="prose max-w-none text-gray-600">
+                <p class="mb-4">
+                    MammoSense is a web application designed to classify mammogram images into breast density categories
+                    B and C using deep learning technology. This application was created as a gift and a tool to help
+                    demonstrate the potential of AI in breast cancer screening.
+                </p>
+
+                <p class="mb-4">
+                    The underlying model is based on EfficientNetB3, a powerful deep learning architecture known for its
+                    efficiency and performance in image classification tasks. The model was trained on a dataset from
+                    the RSNA Breast Cancer Detection challenge, focusing specifically on distinguishing between
+                    scattered fibroglandular densities (category B) and heterogeneously dense breast tissue (category
+                    C).
+                </p>
+
+                <p>
+                    This project combines the latest in artificial intelligence technology with an intuitive,
+                    user-friendly interface to make advanced mammogram analysis more accessible.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Understanding Breast Density -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-12">
+        <div class="p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Understanding Breast Density</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-3">What is Breast Density?</h3>
+                    <p class="text-gray-600 mb-4">
+                        Breast density refers to the amount of fibroglandular tissue in the breast compared to fat.
+                        Dense breast tissue appears white on a mammogram, while fatty tissue appears dark. Different
+                        levels of density are categorized into four groups by radiologists:
+                    </p>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2">
+                        <li><strong>Category A:</strong> Almost entirely fatty</li>
+                        <li><strong>Category B:</strong> Scattered areas of fibroglandular density</li>
+                        <li><strong>Category C:</strong> Heterogeneously dense</li>
+                        <li><strong>Category D:</strong> Extremely dense</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-3">Why Breast Density Matters</h3>
+                    <p class="text-gray-600 mb-4">
+                        Breast density is important for several reasons:
+                    </p>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2">
+                        <li>Higher breast density can make it harder to detect cancer on a mammogram</li>
+                        <li>Dense breast tissue is a known risk factor for developing breast cancer</li>
+                        <li>Women with dense breasts may benefit from additional screening methods</li>
+                        <li>Many states have laws requiring that women be notified if they have dense breasts</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Density Categories Explained -->
+            <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Focus on Categories B and C</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="flex items-center mb-3">
+                            <div
+                                class="flex-shrink-0 h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center mr-3">
+                                <span class="text-xl font-bold text-primary-700">B</span>
+                            </div>
+                            <h4 class="text-lg font-medium text-gray-900">Scattered Fibroglandular Densities</h4>
+                        </div>
+                        <p class="text-gray-600">
+                            This category indicates that the breast has scattered areas of density, but the majority of
+                            the breast tissue is non-dense or fatty. Mammograms of this type are generally easier to
+                            read and interpret.
+                        </p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="flex items-center mb-3">
+                            <div
+                                class="flex-shrink-0 h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center mr-3">
+                                <span class="text-xl font-bold text-primary-700">C</span>
+                            </div>
+                            <h4 class="text-lg font-medium text-gray-900">Heterogeneously Dense</h4>
+                        </div>
+                        <p class="text-gray-600">
+                            In this category, the breast has many areas of fibroglandular tissue density. This can make
+                            it harder to see small masses on a mammogram, as they might be hidden by the dense tissue.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-gray-600 italic">
+                Note: While MammoSense currently focuses on distinguishing between categories B and C, future versions
+                may expand to include all four density categories.
+            </p>
+        </div>
+    </div>
+
+    <!-- The Technology Behind MammoSense -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-12">
+        <div class="p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">The Technology Behind MammoSense</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Deep Learning -->
+                <div class="bg-gradient-to-br from-primary-50 to-white rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="flex-shrink-0 bg-primary-100 rounded-md p-3 mr-3">
+                            <i class="fas fa-brain text-primary-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900">Deep Learning Model</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">
+                        MammoSense utilizes EfficientNetB3, a state-of-the-art convolutional neural network architecture
+                        known for its balance of accuracy and computational efficiency.
+                    </p>
+                    <p class="text-gray-600">
+                        The model was trained on thousands of mammogram images to recognize the subtle patterns that
+                        distinguish different breast density categories.
+                    </p>
+                </div>
+
+                <!-- Image Processing -->
+                <div class="bg-gradient-to-br from-primary-50 to-white rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="flex-shrink-0 bg-primary-100 rounded-md p-3 mr-3">
+                            <i class="fas fa-image text-primary-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900">Advanced Image Processing</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">
+                        Before analysis, mammogram images undergo sophisticated preprocessing techniques to enhance
+                        features and standardize inputs:
+                    </p>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                        <li>Contrast Limited Adaptive Histogram Equalization (CLAHE)</li>
+                        <li>Non-local means denoising</li>
+                        <li>Normalization and resizing</li>
+                    </ul>
+                </div>
+
+                <!-- Web Application -->
+                <div class="bg-gradient-to-br from-primary-50 to-white rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="flex-shrink-0 bg-primary-100 rounded-md p-3 mr-3">
+                            <i class="fas fa-laptop-code text-primary-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900">Modern Web Application</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">
+                        The front-end interface is built with modern web technologies to provide a seamless, intuitive
+                        user experience:
+                    </p>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                        <li>Flask for server-side processing</li>
+                        <li>Tailwind CSS for responsive design</li>
+                        <li>JavaScript for interactive features</li>
+                        <li>Secure file handling and processing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model Performance -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-12">
+        <div class="p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Model Performance & Evaluation</h2>
+
+            <div class="mb-8">
+                <p class="text-lg text-gray-700 mb-4">
+                    Our EfficientNetB3 model demonstrates exceptional performance in classifying breast density
+                    categories, achieving high accuracy and balanced precision-recall metrics:
+                </p>
+
+                <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-chart-line text-primary-600 mr-2"></i>
+                        Performance Metrics
+                    </h3>
+
+                    <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+                        <h4 class="text-lg font-medium text-primary-700 mb-2">Overall Accuracy</h4>
+                        <p class="text-3xl font-bold text-gray-900 mb-2">86.82%</p>
+                        <p class="text-gray-600">Successfully classified 2,015 out of 2,321 test images</p>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                            <thead class="bg-primary-50">
+                                <tr>
+                                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-700">Class</th>
+                                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-700">Precision</th>
+                                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-700">Recall</th>
+                                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-700">F1-Score</th>
+                                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-700">Support</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="py-3 px-4 text-sm font-medium text-gray-900">Density B (Scattered)</td>
+                                    <td class="py-3 px-4 text-sm text-gray-700">0.88</td>
+                                    <td class="py-3 px-4 text-sm text-gray-700">0.86</td>
+                                    <td class="py-3 px-4 text-sm text-gray-700">0.87</td>
+                                    <td class="py-3 px-4 text-sm text-gray-700">1,202</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 text-sm font-medium text-gray-900">Density C (Heterogeneous)
+                                    </td>
+                                    <td class="py-3 px-4 text-sm text-gray-700">0.86</td>
+                                    <td class="py-3 px-4 text-sm text-gray-700">0.87</td>
+                                    <td class="py-3 px-4 text-sm text-gray-700">0.86</td>
+                                    <td class="py-3 px-4 text-sm text-gray-700">1,119</td>
+                                </tr>
+                                <tr class="bg-primary-50">
+                                    <td class="py-3 px-4 text-sm font-medium text-gray-900">Weighted Average</td>
+                                    <td class="py-3 px-4 text-sm text-gray-700">0.87</td>
+                                    <td class="py-3 px-4 text-sm text-gray-700">0.87</td>
+                                    <td class="py-3 px-4 text-sm text-gray-700">0.87</td>
+                                    <td class="py-3 px-4 text-sm text-gray-700">2,321</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6"> -->
+            <div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-chart-pie text-primary-600 mr-2"></i>
+                    Confusion Matrix
+                </h3>
+                <div class="bg-white rounded-lg shadow-md p-4 flex justify-center">
+                    <img src="{{ url_for('static', filename='images/confusion matrix.png') }}" alt="Confusion Matrix"
+                        class="max-w-full h-auto rounded-lg">
+                </div>
+                <p class="mt-3 text-gray-600 text-sm italic">
+                    The confusion matrix visualizes the model's prediction accuracy across both density categories,
+                    highlighting true positives, true negatives, false positives, and false negatives.
+                </p>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-chart-line text-primary-600 mr-2"></i>
+                    Training Performance
+                </h3>
+                <div class="bg-white rounded-lg shadow-md p-4 flex justify-center">
+                    <img src="{{ url_for('static', filename='images/Accuracy and Loss.png') }}"
+                        alt="Accuracy and Loss Curves" class="max-w-full h-auto rounded-lg">
+                </div>
+                <p class="mt-3 text-gray-600 text-sm italic">
+                    These curves show the model's accuracy and loss metrics during training, demonstrating
+                    consistent improvement and stability over training epochs.
+                </p>
+            </div>
+            <!-- </div> -->
+
+            <div class="bg-primary-50 rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-microscope text-primary-600 mr-2"></i>
+                    Sample Prediction
+                </h3>
+                <div class="bg-white rounded-lg shadow-md p-4 flex justify-center">
+                    <img src="{{ url_for('static', filename='images/prediction.png') }}" alt="Sample Prediction"
+                        class="max-w-full h-auto rounded-lg">
+                </div>
+                <p class="mt-4 text-gray-700">
+                    This visualization demonstrates how MammoSense analyzes a mammogram image and provides a
+                    classification result. The model highlights relevant features that contribute to the density
+                    classification, offering transparency in the AI decision-making process.
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Created with Love -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="p-8 text-center">
+            <i class="fas fa-heart text-primary-500 text-4xl mb-4"></i>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Created with Love for Soumia</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                This application was crafted as a special gift, combining technical expertise with a purpose-driven
+                mission to support breast health awareness and screening.
+            </p>
+
+            <div class="mt-8">
+                <a href="{{ url_for('home') }}"
+                    class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                    <i class="fas fa-upload mr-2"></i> Try MammoSense Now
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

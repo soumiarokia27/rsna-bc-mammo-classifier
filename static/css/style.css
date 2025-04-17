@@ -1,0 +1,438 @@
+/* Custom CSS Styles for MammoSense */
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom focus styles */
+*:focus {
+    outline: 2px solid rgba(218, 58, 111, 0.5);
+    outline-offset: 2px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(218, 58, 111, 0.5);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(218, 58, 111, 0.7);
+}
+
+/* Upload container highlight effect */
+.upload-container {
+    transition: all 0.3s ease;
+}
+
+.upload-container:hover {
+    border-color: #ef93b4; /* primary-300 */
+    box-shadow: 0 0 10px rgba(218, 58, 111, 0.2);
+}
+
+/* Image hover effects */
+.aspect-square img {
+    transition: transform 0.3s ease;
+}
+
+.aspect-square:hover img {
+    transform: scale(1.05);
+}
+
+/* Pulse animation for heart icon */
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.fa-heart {
+    animation: heartbeat 1.5s infinite;
+}
+
+/* Card hover effects */
+.bg-white.overflow-hidden.shadow.rounded-lg {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bg-white.overflow-hidden.shadow.rounded-lg:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Button hover transition */
+button, a {
+    transition: all 0.2s ease;
+}
+
+/* Custom active button state */
+button:active, a:active {
+    transform: scale(0.98);
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Custom tooltip styles */
+[data-tooltip] {
+    position: relative;
+    cursor: help;
+}
+
+[data-tooltip]::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+[data-tooltip]:hover::before {
+    opacity: 1;
+    visibility: visible;
+    bottom: 110%;
+}
+
+/* Dark mode toggle styles */
+.dark-mode-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s ease;
+    border: none;
+    outline: none;
+}
+
+.dark-mode-toggle:hover {
+    transform: rotate(15deg);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.dark-mode-toggle i {
+    font-size: 1.5rem;
+}
+
+/* Add a subtle animation for the toggle button */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.animate-pulse {
+    animation: pulse 0.5s ease-in-out;
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+    background: linear-gradient(to bottom right, #1a1a2e, #16213e) !important;
+    color: #e6e6e6 !important;
+}
+
+.dark-mode .dark-mode-toggle {
+    background: #2a2a3a;
+    color: #f5f5f5;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode nav, 
+.dark-mode footer, 
+.dark-mode .bg-white {
+    background-color: #1e1e30 !important;
+    color: #e6e6e6 !important;
+}
+
+.dark-mode .bg-gradient-to-br {
+    background: linear-gradient(to bottom right, #1a1a2e, #16213e) !important;
+}
+
+.dark-mode .text-gray-900 {
+    color: #e6e6e6 !important;
+}
+
+.dark-mode .text-gray-800 {
+    color: #d1d1d1 !important;
+}
+
+.dark-mode .text-gray-700 {
+    color: #c7c7c7 !important;
+}
+
+.dark-mode .text-gray-600 {
+    color: #b3b3b3 !important;
+}
+
+.dark-mode .text-gray-500 {
+    color: #a0a0a0 !important;
+}
+
+.dark-mode .text-gray-400 {
+    color: #8a8a8a !important;
+}
+
+.dark-mode .border-gray-200 {
+    border-color: #2a2a3a !important;
+}
+
+.dark-mode .shadow-lg,
+.dark-mode .shadow-md,
+.dark-mode .shadow {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark-mode .bg-primary-50 {
+    background-color: rgba(218, 58, 111, 0.15) !important;
+}
+
+.dark-mode .bg-gray-50 {
+    background-color: #2a2a3a !important;
+}
+
+.dark-mode .from-primary-50,
+.dark-mode .to-white {
+    --tw-gradient-from: #2a2a3a !important;
+    --tw-gradient-to: #1e1e30 !important;
+}
+
+.dark-mode .from-pink-50 {
+    --tw-gradient-from: #1a1a2e !important;
+}
+
+.dark-mode .to-white {
+    --tw-gradient-to: #16213e !important;
+}
+
+.dark-mode .divide-gray-200 > * {
+    border-color: #2a2a3a !important;
+}
+
+.dark-mode .bg-primary-100 {
+    background-color: rgba(218, 58, 111, 0.2) !important;
+}
+
+.dark-mode .bg-primary-600 {
+    background-color: #da3a6f !important;
+}
+
+.dark-mode .border-primary-500 {
+    border-color: #da3a6f !important;
+}
+
+.dark-mode .hover\:bg-gray-50:hover {
+    background-color: #2a2a3a !important;
+}
+
+.dark-mode .hover\:bg-gray-100:hover {
+    background-color: #333345 !important;
+}
+
+.dark-mode .hover\:text-gray-500:hover {
+    color: #a0a0a0 !important;
+}
+
+.dark-mode .hover\:text-gray-700:hover {
+    color: #c7c7c7 !important;
+}
+
+.dark-mode .hover\:border-gray-300:hover {
+    border-color: #3a3a4a !important;
+}
+
+/* Dark mode styles for navigation */
+.dark-mode .border-primary-500 {
+    border-color: #da3a6f !important;
+}
+
+.dark-mode .bg-primary-50 {
+    background-color: rgba(218, 58, 111, 0.15) !important;
+}
+
+.dark-mode .text-primary-700 {
+    color: #ef93b4 !important;
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+    background: #1e1e30;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+    background: rgba(218, 58, 111, 0.5);
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: rgba(218, 58, 111, 0.7);
+}
+
+.dark-mode table thead {
+    background-color: #2a2a3a !important;
+}
+
+.dark-mode table tbody {
+    background-color: #1e1e30 !important;
+}
+
+.dark-mode .bg-primary-50 {
+    background-color: rgba(218, 58, 111, 0.15) !important;
+}
+
+.dark-mode input, 
+.dark-mode textarea, 
+.dark-mode select {
+    background-color: #2a2a3a !important;
+    color: #e6e6e6 !important;
+    border-color: #3a3a4a !important;
+}
+
+.dark-mode input::placeholder, 
+.dark-mode textarea::placeholder {
+    color: #8a8a8a !important;
+}
+
+/* Dark mode styles for rounded elements */
+.dark-mode .rounded-lg,
+.dark-mode .rounded-xl {
+    background-color: #1e1e30 !important;
+}
+
+/* Dark mode styles for buttons */
+.dark-mode .bg-primary-600 {
+    background-color: #da3a6f !important;
+}
+
+.dark-mode .hover\:bg-primary-700:hover {
+    background-color: #c41f52 !important;
+}
+
+/* Dark mode styles for mobile menu */
+.dark-mode .mobile-menu {
+    background-color: #1e1e30 !important;
+    border-color: #2a2a3a !important;
+}
+
+/* Dark mode styles for file upload container */
+.dark-mode .upload-container {
+    background-color: #2a2a3a !important;
+    border-color: #3a3a4a !important;
+}
+
+.dark-mode .upload-container:hover {
+    border-color: #da3a6f !important;
+    box-shadow: 0 0 10px rgba(218, 58, 111, 0.3) !important;
+}
+
+/* Dark mode styles for file preview */
+.dark-mode .file-preview {
+    background-color: #2a2a3a !important;
+}
+
+/* Ensure text remains visible during webfont load */
+.dark-mode .font-sans {
+    font-display: swap;
+}
+
+/* Additional responsive adjustments */
+@media (max-width: 640px) {
+    .fa-heart {
+        animation: none;
+    }
+    
+    [data-tooltip]::before {
+        display: none;
+    }
+}
+
+/* Button gradient effect */
+.bg-gradient-button {
+    background-image: linear-gradient(135deg, #da3a6f 0%, #c41f52 100%);
+    transition: all 0.3s ease;
+}
+
+.bg-gradient-button:hover {
+    background-image: linear-gradient(135deg, #c41f52 0%, #a41742 100%);
+}
+
+/* Accessible focus indicators for keyboard users */
+.keyboard-user *:focus {
+    outline: 3px solid #da3a6f !important;
+    outline-offset: 3px !important;
+}
+
+/* Print styles */
+@media print {
+    nav, footer, button, .no-print {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+    }
+    
+    .print-only {
+        display: block !important;
+    }
+    
+    .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+}
+
+/* Animation for page transitions */
+.page-transition-enter {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.page-transition-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.page-transition-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.page-transition-exit-active {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s, transform 0.3s;
+} 

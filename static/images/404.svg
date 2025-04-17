@@ -1,0 +1,40 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .animated-dots {
+      animation: pulse 2s infinite alternate;
+    }
+    @keyframes pulse {
+      from { opacity: 0.5; }
+      to { opacity: 1; }
+    }
+  </style>
+  
+  <!-- Background elements -->
+  <circle cx="400" cy="300" r="280" fill="#FCF0F4" />
+  <path d="M143.5 155.5C143.5 173.825 125.754 188.5 103.5 188.5C81.2462 188.5 63.5 173.825 63.5 155.5C63.5 137.175 81.2462 122.5 103.5 122.5C125.754 122.5 143.5 137.175 143.5 155.5Z" fill="#F5C1D7" fill-opacity="0.4"/>
+  <path d="M743.5 405.5C743.5 423.825 725.754 438.5 703.5 438.5C681.246 438.5 663.5 423.825 663.5 405.5C663.5 387.175 681.246 372.5 703.5 372.5C725.754 372.5 743.5 387.175 743.5 405.5Z" fill="#F5C1D7" fill-opacity="0.4"/>
+  <path d="M213.5 495.5C213.5 513.825 195.754 528.5 173.5 528.5C151.246 528.5 133.5 513.825 133.5 495.5C133.5 477.175 151.246 462.5 173.5 462.5C195.754 462.5 213.5 477.175 213.5 495.5Z" fill="#F5C1D7" fill-opacity="0.4"/>
+  <path d="M623.5 125.5C623.5 143.825 605.754 158.5 583.5 158.5C561.246 158.5 543.5 143.825 543.5 125.5C543.5 107.175 561.246 92.5 583.5 92.5C605.754 92.5 623.5 107.175 623.5 125.5Z" fill="#F5C1D7" fill-opacity="0.4"/>
+  
+  <!-- 404 text -->
+  <path d="M241 237.3V277.8H180.1V318.3H241V358.8H281.5V318.3H342.4V277.8H281.5V237.3H241Z" fill="#DA3A6F"/>
+  <path d="M398.3 237.3C378.4 237.3 362.4 245.4 350.6 261.5C338.7 277.6 332.8 298.3 332.8 323.5C332.8 348.8 338.7 369.4 350.6 385.5C362.4 401.6 378.4 409.7 398.3 409.7C418.2 409.7 434.2 401.6 446 385.5C457.9 369.4 463.8 348.8 463.8 323.5C463.8 298.3 457.9 277.6 446 261.5C434.2 245.4 418.2 237.3 398.3 237.3Z" fill="#DA3A6F"/>
+  <path d="M590.1 237.3V277.8H529.2V318.3H590.1V358.8H630.6V318.3H691.5V277.8H630.6V237.3H590.1Z" fill="#DA3A6F"/>
+  
+  <!-- Magnifying glass illustration -->
+  <circle cx="310" cy="420" r="60" stroke="#333" stroke-width="12" fill="white"/>
+  <line x1="355" y1="465" x2="420" y2="530" stroke="#333" stroke-width="12" stroke-linecap="round"/>
+  
+  <!-- Animated dots -->
+  <g class="animated-dots">
+    <circle cx="480" cy="450" r="8" fill="#DA3A6F"/>
+    <circle cx="510" cy="450" r="8" fill="#DA3A6F"/>
+    <circle cx="540" cy="450" r="8" fill="#DA3A6F"/>
+  </g>
+  
+  <!-- Search illustration elements -->
+  <rect x="240" y="390" width="140" height="20" rx="5" fill="#EEE"/>
+  <circle cx="270" cy="420" r="5" fill="#555"/>
+  <circle cx="310" cy="420" r="5" fill="#555"/>
+  <path d="M280 430C290 440 330 440 340 430" stroke="#555" stroke-width="3" stroke-linecap="round"/>
+</svg> 

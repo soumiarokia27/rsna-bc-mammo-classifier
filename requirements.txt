@@ -1,16 +1,16 @@
-Flask>=2.0
-pydicom>=2.3
-opencv-python-headless>=4.5
-numpy>=1.19
-torch>=1.8 # Ensure compatibility with your model/CUDA
-torchvision>=0.9 # Ensure compatibility with torch
-timm>=0.4 # Or the version used for your model
-scikit-image>=0.18 # Used by some pydicom handlers, good to have
-pandas>=1.2 # For saving results to CSV if needed later
-tqdm>=4.60 # For progress bars (used in main, helpful for logs)
-python-dotenv>=0.15
-Werkzeug>=2.0 # Often needed with Flask
-gunicorn>=20.1 # Recommended for production deployment
-
-# Optional (Install if using BM3D)
-# bm3d>=VERSION_NUMBER
+flask
+werkzeug
+numpy
+opencv-python
+gunicorn
+Pillow
+pydicom
+pylibjpeg
+pylibjpeg-libjpeg
+python-gdcm 
+pydicom 
+pylibjpeg 
+PyWavelets
+torch
+torchvision
+timm

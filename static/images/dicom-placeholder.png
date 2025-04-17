@@ -1,0 +1,14 @@
+/* 
+NOTE: This file should be a 200x200 pixel PNG image with a DICOM placeholder graphic.
+Since we can't create a binary file here, you should create a simple PNG image with:
+1. A light gray background
+2. A DICOM logo or medical imaging icon in the center
+3. Text saying "DICOM File" 
+
+You can create this in any image editor and save it to this location.
+
+For now, you can use a generic image placeholder from a service like:
+https://via.placeholder.com/200x200/f3f4f6/718096?text=DICOM+File
+
+Or create a custom SVG and convert it to PNG.
+*/ 

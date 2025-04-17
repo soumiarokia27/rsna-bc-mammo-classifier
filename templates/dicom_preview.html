@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block title %}DICOM Preview - {{ filename }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <!-- DICOM Preview Container -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+        <div class="p-8">
+            <div class="flex items-center mb-6">
+                <i class="fas fa-x-ray text-primary-500 text-2xl mr-3"></i>
+                <h1 class="text-3xl font-bold text-gray-900">DICOM Image Preview</h1>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Left Column: Image -->
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">File: {{ filename }}</h2>
+
+                    <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md mb-4">
+                        <img src="data:image/png;base64,{{ image }}" alt="DICOM Image"
+                            class="w-full h-full object-contain">
+                    </div>
+
+                    <div class="flex space-x-4">
+                        <a href="{{ url_for('home') }}"
+                            class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            <i class="fas fa-chevron-left mr-2"></i>
+                            Back to Home
+                        </a>
+
+                        <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data"
+                            class="inline-block">
+                            <input type="hidden" name="file_path" value="{{ request.args.get('file') }}">
+                            <button type="submit"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                <i class="fas fa-brain mr-2"></i>
+                                Analyze Image
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Right Column: Metadata -->
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">DICOM Metadata</h2>
+
+                    <div class="bg-gray-50 rounded-lg p-6 shadow-sm">
+                        <table class="min-w-full">
+                            <tbody>
+                                {% for key, value in metadata.items() %}
+                                <tr class="{% if loop.index % 2 == 0 %}bg-gray-100{% endif %}">
+                                    <td class="py-2 px-4 border-b border-gray-200 font-medium text-gray-700">{{ key }}
+                                    </td>
+                                    <td class="py-2 px-4 border-b border-gray-200 text-gray-600">{{ value }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Manipulation Tools (future enhancement) -->
+            <div class="mt-8 border-t border-gray-200 pt-8">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Image Controls</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Windowing</h3>
+                        <div class="space-y-4">
+                            <label class="block text-sm font-medium text-gray-700">
+                                Window Width
+                                <input type="range" min="1" max="4000" value="2000" class="mt-1 block w-full"
+                                    id="window-width">
+                            </label>
+
+                            <label class="block text-sm font-medium text-gray-700">
+                                Window Center
+                                <input type="range" min="-1000" max="3000" value="40" class="mt-1 block w-full"
+                                    id="window-center">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Zoom</h3>
+                        <label class="block text-sm font-medium text-gray-700">
+                            Zoom Level
+                            <input type="range" min="50" max="200" value="100" class="mt-1 block w-full"
+                                id="zoom-level">
+                            <span class="text-xs text-gray-500" id="zoom-value">100%</span>
+                        </label>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Presets</h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button
+                                class="bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                id="preset-bone">
+                                Bone
+                            </button>
+                            <button
+                                class="bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                id="preset-tissue">
+                                Tissue
+                            </button>
+                            <button
+                                class="bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                id="preset-lung">
+                                Lung
+                            </button>
+                            <button
+                                class="bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                id="preset-reset">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Disclaimer -->
+            <div class="mt-8 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-700">
+                            <strong>Medical Disclaimer:</strong> This is a preview tool only and is not intended for
+                            diagnostic use. DICOM image rendering might not match medical-grade software. For proper
+                            diagnosis, please use appropriate medical imaging software.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Zoom functionality
+        const zoomInput = document.getElementById('zoom-level');
+        const zoomValue = document.getElementById('zoom-value');
+        const dicomImage = document.querySelector('.aspect-square img');
+
+        if (zoomInput && zoomValue && dicomImage) {
+            zoomInput.addEventListener('input', function () {
+                const zoomLevel = this.value;
+                zoomValue.textContent = `${zoomLevel}%`;
+                dicomImage.style.transform = `scale(${zoomLevel / 100})`;
+            });
+        }
+
+        // Preset buttons
+        const presetBone = document.getElementById('preset-bone');
+        const presetTissue = document.getElementById('preset-tissue');
+        const presetLung = document.getElementById('preset-lung');
+        const presetReset = document.getElementById('preset-reset');
+        const windowWidth = document.getElementById('window-width');
+        const windowCenter = document.getElementById('window-center');
+
+        // This is just UI behavior - actual windowing would require canvas manipulation
+        // For this demo, we're just updating the sliders
+        if (presetBone && windowWidth && windowCenter) {
+            presetBone.addEventListener('click', function () {
+                windowWidth.value = 2000;
+                windowCenter.value = 500;
+            });
+        }
+
+        if (presetTissue && windowWidth && windowCenter) {
+            presetTissue.addEventListener('click', function () {
+                windowWidth.value = 400;
+                windowCenter.value = 40;
+            });
+        }
+
+        if (presetLung && windowWidth && windowCenter) {
+            presetLung.addEventListener('click', function () {
+                windowWidth.value = 1500;
+                windowCenter.value = -500;
+            });
+        }
+
+        if (presetReset && windowWidth && windowCenter) {
+            presetReset.addEventListener('click', function () {
+                windowWidth.value = 2000;
+                windowCenter.value = 40;
+                zoomInput.value = 100;
+                zoomValue.textContent = '100%';
+                dicomImage.style.transform = 'scale(1)';
+            });
+        }
+    });
+</script>
+{% endblock %}
