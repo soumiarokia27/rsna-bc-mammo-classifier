@@ -30,7 +30,7 @@ MANIFEST
 models/best_efficientnet_model.keras
 *.pth
 !models/best_deit_base_patch16_224_binary_BC.pth
-
+rewrite-author.sh
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
