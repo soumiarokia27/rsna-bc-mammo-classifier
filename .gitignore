@@ -28,7 +28,9 @@ MANIFEST
 
 # me 
 models/best_efficientnet_model.keras
-models/best_deit_base_patch16_224_binary_BC.pth
+*.pth
+!models/best_deit_base_patch16_224_binary_BC.pth
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
