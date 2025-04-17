@@ -1,0 +1,402 @@
+{% extends 'base.html' %}
+
+{% block title %}MammoSense - Prediction Result{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <!-- Result Container -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+        <div class="p-8">
+            <div class="flex items-center mb-6">
+                <i class="fas fa-chart-pie text-primary-500 text-2xl mr-3"></i>
+                <h1 class="text-3xl font-bold text-gray-900">Mammogram Analysis Results</h1>
+                {% if result.is_dicom %}
+                <span
+                    class="ml-4 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary-100 text-secondary-800">
+                    <i class="fas fa-x-ray mr-1"></i> DICOM
+                </span>
+                {% endif %}
+            </div>
+
+            <!-- Result Card -->
+            <div
+                class="bg-gradient-to-br from-primary-50 to-white border border-primary-100 rounded-xl overflow-hidden shadow-sm mb-8">
+                <div class="p-6">
+                    <div
+                        class="grid grid-cols-1 {% if result.is_dicom %}md:grid-cols-3{% else %}md:grid-cols-2{% endif %} gap-8">
+                        <!-- Left Column: Images -->
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Mammogram Images</h2>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <!-- Original Image -->
+                                <div>
+                                    <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-sm">
+                                        <img src="data:image/png;base64,{{ result.original_image_base64 }}"
+                                            alt="Original Mammogram" class="w-full h-full object-contain">
+                                    </div>
+                                    <p class="text-sm text-center text-gray-500 mt-2">Original Image</p>
+                                </div>
+
+                                <!-- Denoised Image -->
+                                <div>
+                                    <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-sm">
+                                        {% if result.denoised_image %}
+                                        <img src="{{ result.denoised_image }}" alt="Denoised Mammogram"
+                                            class="w-full h-full object-contain">
+                                        {% else %}
+                                        <div class="flex items-center justify-center h-full">
+                                            <p class="text-gray-500">No denoised image available</p>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <p class="text-sm text-center text-gray-500 mt-2">Denoised Image</p>
+                                </div>
+                            </div>
+
+                            <!-- DICOM Metadata Column -->
+                            <div>
+                                <h2 class="text-xl font-semibold text-gray-900 mb-4">DICOM Metadata</h2>
+
+                                <div
+                                    class="bg-white rounded-lg border border-gray-200 shadow-sm p-4 overflow-y-auto max-h-80">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <tbody class="divide-y divide-gray-200">
+                                            {% for key, value in result.metadata.items() %}
+                                            {% if value != "Unknown" and value != "N/A" %}
+                                            <tr>
+                                                <td class="px-2 py-2 text-sm font-medium text-gray-900">{{ key }}</td>
+                                                <td class="px-2 py-2 text-sm text-gray-500">{{ value }}</td>
+                                            </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                {% if result.metadata.PatientID != "Unknown" and result.metadata.PatientID != "N/A" %}
+                                <div class="mt-4 bg-blue-50 border-l-4 border-blue-400 p-4 rounded-md">
+                                    <div class="flex">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-info-circle text-blue-400"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-sm text-blue-700">
+                                                <strong>Patient Information:</strong> Real patient data detected. Please
+                                                handle this information in accordance with privacy regulations.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Results -->
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Analysis Results</h2>
+
+                            <!-- Prediction Result -->
+                            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-lg font-medium text-gray-900">Density Classification</h3>
+
+                                    <!-- Confidence Badge -->
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                                        {% if result.confidence >= 90 %}
+                                            bg-green-100 text-green-800
+                                        {% elif result.confidence >= 70 %}
+                                            bg-blue-100 text-blue-800
+                                        {% else %}
+                                            bg-yellow-100 text-yellow-800
+                                        {% endif %}
+                                    ">
+                                        {{ result.confidence|round(2) }}% Confidence
+                                    </span>
+                                </div>
+
+                                <!-- Category Result -->
+                                <div class="flex items-center">
+                                    <div
+                                        class="flex-shrink-0 h-20 w-20 rounded-full bg-primary-100 flex items-center justify-center">
+                                        <span class="text-3xl font-bold text-primary-700">{{ result.predicted_class
+                                            }}</span>
+                                    </div>
+                                    <div class="ml-5">
+                                        <h4 class="text-lg font-bold text-gray-900">{{ result.explanation.title }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Explanation Card -->
+                            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">What This Means</h3>
+                                <p class="text-gray-600 mb-4">{{ result.explanation.description }}</p>
+
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">Recommendation</h3>
+                                <p class="text-gray-600">{{ result.explanation.recommendation }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Disclaimer -->
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-700">
+                            <strong>Medical Disclaimer:</strong> This tool is for informational purposes only and is not
+                            a substitute for professional medical advice. Always consult with a healthcare provider for
+                            proper diagnosis and treatment.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="{{ url_for('home') }}"
+            class="inline-flex justify-center items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+            <i class="fas fa-home mr-2"></i>
+            Back to Home
+        </a>
+
+        <button id="download-button"
+            class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+            <i class="fas fa-download mr-2"></i>
+            Download Report
+        </button>
+
+        <button id="share-button"
+            class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-secondary-600 hover:bg-secondary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-500">
+            <i class="fas fa-share-alt mr-2"></i>
+            Share Results
+        </button>
+    </div>
+
+    <!-- How to Interpret Results -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-8">
+        <div class="p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">How to Interpret These Results</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-3">About Breast Density</h3>
+                    <p class="text-gray-600 mb-4">
+                        Breast density refers to the amount of fibroglandular tissue in the breast compared to fat.
+                        Dense breast tissue appears white on a mammogram, while fatty tissue appears dark. Different
+                        levels of density are categorized into four groups (A, B, C, and D).
+                    </p>
+                    <p class="text-gray-600">
+                        This AI model specifically focuses on distinguishing between categories B (scattered
+                        fibroglandular densities) and C (heterogeneously dense). These categories are important as they
+                        can affect mammogram interpretation and screening recommendations.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-3">What to Do Next</h3>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2">
+                        <li>Discuss these results with your healthcare provider during your next appointment</li>
+                        <li>Continue with regular mammogram screenings as recommended</li>
+                        <li>If your result indicates higher density (Category C), ask about supplemental screening
+                            options</li>
+                        <li>Remember that breast density is just one of many factors in breast health</li>
+                        <li>This AI analysis is not a replacement for professional medical interpretation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Share Modal (hidden by default) -->
+<div id="share-modal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full m-4">
+        <div class="p-4 border-b border-gray-200">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-medium text-gray-900">Share Your Results</h3>
+                <button id="close-share-modal" class="text-gray-400 hover:text-gray-500">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="p-6">
+            <p class="text-gray-600 mb-4">Share your mammogram density classification results with your healthcare
+                provider or loved ones.</p>
+
+            <div class="space-y-4">
+                <!-- Email Sharing -->
+                <div>
+                    <label for="share-email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <div class="flex rounded-md shadow-sm">
+                        <input type="email" id="share-email"
+                            class="flex-1 min-w-0 block w-full px-3 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                            placeholder="recipient@example.com">
+                        <button type="button"
+                            class="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 rounded-r-md bg-gray-50 text-gray-700 text-sm font-medium hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            Send
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Social Sharing -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-3">Share on Social Media</label>
+                    <div class="flex space-x-4">
+                        <button
+                            class="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 hover:bg-blue-700 text-white">
+                            <i class="fab fa-facebook-f"></i>
+                        </button>
+                        <button
+                            class="flex items-center justify-center h-10 w-10 rounded-full bg-blue-400 hover:bg-blue-500 text-white">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button
+                            class="flex items-center justify-center h-10 w-10 rounded-full bg-green-600 hover:bg-green-700 text-white">
+                            <i class="fab fa-whatsapp"></i>
+                        </button>
+                        <button
+                            class="flex items-center justify-center h-10 w-10 rounded-full bg-blue-700 hover:bg-blue-800 text-white">
+                            <i class="fab fa-linkedin-in"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Copy Link -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Copy Link</label>
+                    <div class="flex rounded-md shadow-sm">
+                        <input type="text" id="share-link"
+                            class="flex-1 min-w-0 block w-full px-3 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                            value="https://mammosense.example.com/results/12345" readonly>
+                        <button type="button" id="copy-link-button"
+                            class="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 rounded-r-md bg-gray-50 text-gray-700 text-sm font-medium hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Share modal functionality
+        const shareButton = document.getElementById('share-button');
+        const shareModal = document.getElementById('share-modal');
+        const closeShareModal = document.getElementById('close-share-modal');
+
+        // Copy link functionality
+        const copyLinkButton = document.getElementById('copy-link-button');
+        const shareLinkInput = document.getElementById('share-link');
+
+        // Download report functionality
+        const downloadButton = document.getElementById('download-button');
+
+        // Show share modal
+        shareButton.addEventListener('click', function () {
+            shareModal.classList.remove('hidden');
+        });
+
+        // Hide share modal when clicking close button
+        closeShareModal.addEventListener('click', function () {
+            shareModal.classList.add('hidden');
+        });
+
+        // Hide share modal when clicking outside of modal content
+        shareModal.addEventListener('click', function (e) {
+            if (e.target === shareModal) {
+                shareModal.classList.add('hidden');
+            }
+        });
+
+        // Copy link to clipboard
+        copyLinkButton.addEventListener('click', function () {
+            shareLinkInput.select();
+            document.execCommand('copy');
+
+            // Change button text temporarily
+            const originalText = copyLinkButton.innerText;
+            copyLinkButton.innerText = 'Copied!';
+            setTimeout(function () {
+                copyLinkButton.innerText = originalText;
+            }, 2000);
+        });
+
+        // Download report as PDF
+        downloadButton.addEventListener('click', function () {
+            // Create loading indicator
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.className = 'fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50';
+            loadingOverlay.innerHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+                    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-primary-500 border-solid mx-auto mb-4"></div>
+                    <p class="text-gray-800 text-lg font-medium">Generating PDF...</p>
+                </div>
+            `;
+            document.body.appendChild(loadingOverlay);
+
+            // Short delay to allow loading overlay to appear
+            setTimeout(function () {
+                // Capture the result card as an image
+                const resultCard = document.querySelector('.bg-gradient-to-br');
+
+                html2canvas(resultCard, {
+                    scale: 2, // Higher scale for better quality
+                    useCORS: true,
+                    logging: false
+                }).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+
+                    // Create PDF
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+
+                    // Calculate dimensions to fit image on page
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+                    // Add title
+                    pdf.setFontSize(20);
+                    pdf.setTextColor(218, 58, 111); // primary-500 color
+                    pdf.text('MammoSense Report', 105, 20, { align: 'center' });
+
+                    // Add date
+                    pdf.setFontSize(12);
+                    pdf.setTextColor(100, 100, 100);
+                    const date = new Date().toLocaleDateString();
+                    pdf.text(`Generated on: ${date}`, 105, 30, { align: 'center' });
+
+                    // Add image
+                    pdf.addImage(imgData, 'PNG', 15, 40, pdfWidth - 30, pdfHeight * 0.8);
+
+                    // Add footer
+                    pdf.setFontSize(10);
+                    pdf.setTextColor(150, 150, 150);
+                    pdf.text('This report was generated by MammoSense AI Breast Density Classification Tool.', 105, 285, { align: 'center' });
+                    pdf.text('For medical advice, please consult with your healthcare provider.', 105, 290, { align: 'center' });
+
+                    // Save the PDF
+                    pdf.save('MammoSense_Report.pdf');
+
+                    // Remove loading overlay
+                    document.body.removeChild(loadingOverlay);
+                });
+            }, 100);
+        });
+    });
+</script>
+{% endblock %}

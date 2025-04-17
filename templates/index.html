@@ -1,103 +1,531 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DICOM Diagnosis Assistant</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-    <style>
-        body { padding-top: 20px; background-color: #f8f9fa; }
-        .container { max-width: 700px; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .alert { margin-top: 15px; }
-        h1 { color: #343a40; margin-bottom: 25px; text-align: center; }
-        label { font-weight: 500; }
-        .form-label { margin-bottom: 0.5rem; }
-        .form-control, .form-select { margin-bottom: 1rem; }
-        .btn-primary { background-color: #0d6efd; border-color: #0d6efd; }
-        .btn-primary:hover { background-color: #0b5ed7; border-color: #0a58ca; }
-        .denoise-options { margin-top: 1rem; border: 1px solid #dee2e6; padding: 15px; border-radius: 5px; background-color: #f8f9fa; }
-        .denoise-params { margin-left: 20px; margin-top: 10px; display: none; } /* Hidden by default */
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>DICOM Diagnosis Assistant</h1>
+{% extends 'base.html' %}
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+{% block title %}MammoSense - AI Breast Density Classification{% endblock %}
 
-        <form action="{{ url_for('process_dicom_upload') }}" method="post" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label for="dicom_file" class="form-label">Upload DICOM File (.dcm or no extension)</label>
-                <input class="form-control" type="file" id="dicom_file" name="dicom_file" accept=".dcm,application/dicom,*" required>
-                 <div class="form-text">Max file size: 32MB.</div>
+{% block content %}
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <!-- Hero Section -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-12">
+        <div class="md:flex">
+            <div class="md:flex-shrink-0 md:w-1/2">
+                <img class="h-full w-full object-cover" src="{{ url_for('static', filename='images/hero-image.jpg') }}"
+                    alt="Breast Cancer Awareness"
+                    onerror="this.src='https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80'">
             </div>
-
-            <div class="denoise-options">
-                 <label class="form-label">Denoising Options</label>
-                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="denoise_method" id="denoise_none" value="none" checked>
-                    <label class="form-check-label" for="denoise_none">
-                        None
-                    </label>
-                </div>
-                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="denoise_method" id="denoise_nlm" value="nlm">
-                    <label class="form-check-label" for="denoise_nlm">
-                        Non-Local Means (NLM)
-                    </label>
-                    <div class="denoise-params" id="nlm_params">
-                        <label for="denoise_h" class="form-label form-text">Strength (h):</label>
-                        <input type="number" step="any" name="denoise_h" id="denoise_h" class="form-control form-control-sm" value="10">
-                    </div>
-                </div>
-                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="denoise_method" id="denoise_bm3d" value="bm3d">
-                    <label class="form-check-label" for="denoise_bm3d">
-                        BM3D <small>(Requires 'bm3d' library installed)</small>
-                    </label>
-                     <div class="denoise-params" id="bm3d_params">
-                        <label for="denoise_sigma" class="form-label form-text">Noise Sigma (0-1):</label>
-                        <input type="number" step="any" name="denoise_sigma" id="denoise_sigma" class="form-control form-control-sm" value="0.117">
-                    </div>
+            <div class="p-8 md:w-1/2">
+                <div class="uppercase tracking-wide text-sm text-primary-500 font-semibold">AI-Powered Analysis</div>
+                <h1 class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                    Breast Density Classification
+                </h1>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500">
+                    Welcome to MammoSense, a personal gift for Soumia. This AI-powered tool helps classify mammography
+                    images into density categories B or C using advanced deep learning technology.
+                </p>
+                <div class="mt-6">
+                    <a href="#upload-section"
+                        class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        <i class="fas fa-upload mr-2"></i> Upload Mammogram
+                    </a>
                 </div>
             </div>
-
-
-            <div class="d-grid gap-2 mt-4">
-                 <button type="submit" class="btn btn-primary btn-lg">Process DICOM</button>
-            </div>
-        </form>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Show/hide denoising parameters based on selection
-        const radioButtons = document.querySelectorAll('input[name="denoise_method"]');
-        const nlmParamsDiv = document.getElementById('nlm_params');
-        const bm3dParamsDiv = document.getElementById('bm3d_params');
+    <!-- Info Cards -->
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-12">
+        <!-- Card 1 -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-primary-100 rounded-md p-3">
+                        <i class="fas fa-microscope text-primary-600 text-xl"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dt class="text-lg font-medium text-gray-900">Advanced AI Analysis</dt>
+                        <dd class="mt-2 text-base text-gray-500">
+                            Powered by EfficientNet deep learning model trained on thousands of mammogram images.
+                        </dd>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        function toggleParams() {
-            const selectedMethod = document.querySelector('input[name="denoise_method"]:checked').value;
-            nlmParamsDiv.style.display = (selectedMethod === 'nlm') ? 'block' : 'none';
-            bm3dParamsDiv.style.display = (selectedMethod === 'bm3d') ? 'block' : 'none';
-        }
+        <!-- Card 2 -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-primary-100 rounded-md p-3">
+                        <i class="fas fa-shield-alt text-primary-600 text-xl"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dt class="text-lg font-medium text-gray-900">Privacy First</dt>
+                        <dd class="mt-2 text-base text-gray-500">
+                            Your images are processed locally and never stored permanently. Your privacy is our
+                            priority.
+                        </dd>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        radioButtons.forEach(radio => {
-            radio.addEventListener('change', toggleParams);
+        <!-- Card 3 -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-primary-100 rounded-md p-3">
+                        <i class="fas fa-heart text-primary-600 text-xl"></i>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dt class="text-lg font-medium text-gray-900">For Soumia</dt>
+                        <dd class="mt-2 text-base text-gray-500">
+                            This application was created with love, featuring a beautiful design and reliable
+                            technology.
+                        </dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: DICOM Support Banner -->
+    <!-- <div class="bg-secondary-50 border-l-4 border-secondary-500 p-5 rounded-lg shadow-md mb-12">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <i class="fas fa-x-ray text-secondary-500 text-2xl"></i>
+            </div>
+            <div class="ml-4">
+                <h3 class="text-lg font-medium text-secondary-800">DICOM Support Added</h3>
+                <p class="mt-1 text-secondary-700">
+                    Now supporting DICOM files (.dcm) for direct upload from medical imaging systems. Experience
+                    enhanced metadata extraction and specialized image processing.
+                </p>
+            </div>
+        </div>
+    </div> -->
+
+    <!-- Upload Section -->
+    <div id="upload-section" class="bg-white rounded-xl shadow-lg overflow-hidden mb-12">
+        <div class="p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Upload a Mammogram Image</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-gray-600 mb-4">
+                        Upload a mammogram image to classify its breast density category. The AI will analyze the image
+                        and provide a classification result along with an explanation.
+                    </p>
+
+                    <div class="mb-4">
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Supported Formats</h3>
+                        <ul class="list-disc list-inside text-gray-600">
+                            <li><span class="font-medium text-secondary-600">DICOM (.dcm)</span> - Medical imaging
+                                format</li>
+                            <li>JPEG/JPG</li>
+                            <li>PNG</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Guidelines</h3>
+                        <ul class="list-disc list-inside text-gray-600">
+                            <li>Upload clear, high-quality mammogram images</li>
+                            <li>Ensure the image is properly oriented</li>
+                            <li>DICOM files preserve valuable metadata</li>
+                            <li>Maximum file size: 32MB</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data"
+                        class="space-y-6">
+                        <div
+                            class="upload-container border-2 border-dashed border-gray-300 rounded-lg py-12 flex flex-col items-center justify-center cursor-pointer hover:border-primary-400 transition-colors">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-500 text-center mb-2">Drag and drop your image here</p>
+                            <p class="text-gray-400 text-sm text-center mb-2">or click to browse files</p>
+                            <p class="text-secndary-500 text-sm text-center mb-4">DICOM (.dcm) files preferred</p>
+
+                            <!-- Hidden file input -->
+                            <input type="file" name="file" id="file-upload" class="hidden"
+                                accept=".dcm,.jpg,.jpeg,.png">
+
+                            <!-- File preview container (initially hidden) -->
+                            <div class="file-preview hidden mt-4 w-full">
+                                <div class="flex items-center p-2 bg-gray-50 rounded">
+                                    <i class="fas fa-file-medical text-primary-500 mr-2 file-icon"></i>
+                                    <span class="filename text-sm truncate flex-grow"></span>
+                                    <button type="button" class="remove-file text-gray-400 hover:text-red-500">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="preview-image mt-2 w-full flex justify-center">
+                                    <img id="image-preview" class="max-h-48 rounded shadow hidden" src="" alt="Preview">
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex space-x-4">
+                            <button type="submit" id="submit-button"
+                                class="flex-1 inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled>
+                                <i class="fas fa-brain mr-2"></i>
+                                Analyze Image
+                            </button>
+
+                            <button type="button" id="preview-button"
+                                class=" inline-flex justify-center items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md shadow-sm text-secondary-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled>
+                                <i class="fas fa-eye mr-2"></i>
+                                Preview DICOM
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Loading overlay -->
+                    <div id="loading-overlay"
+                        class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+                        <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+                            <div
+                                class="animate-spin rounded-full h-16 w-16 border-t-4 border-primary-500 border-solid mx-auto mb-4">
+                            </div>
+                            <p class="text-gray-800 text-lg font-medium">Analyzing your mammogram...</p>
+                            <p class="text-gray-600 mt-2">Please wait while our AI processes your image</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">About Breast Density Classification</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-3">Category B: Scattered Fibroglandular Densities
+                    </h3>
+                    <p class="text-gray-600 mb-4">
+                        This category indicates that the breast has scattered areas of density, but the majority of the
+                        breast tissue is non-dense or fatty. Mammograms of this type are generally easier to read and
+                        interpret because abnormalities are more visible against fatty tissue.
+                    </p>
+                    <ul class="list-disc list-inside text-gray-600">
+                        <li>Easier to detect abnormalities on mammograms</li>
+                        <li>Lower risk of hiding small masses</li>
+                        <li>Standard screening protocols are usually effective</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-3">Category C: Heterogeneously Dense</h3>
+                    <p class="text-gray-600 mb-4">
+                        In this category, the breast has many areas of fibroglandular tissue density. This can make it
+                        harder to see small masses on a mammogram, as they might be hidden by the dense tissue.
+                        Additional screening methods may be recommended.
+                    </p>
+                    <ul class="list-disc list-inside text-gray-600">
+                        <li>More challenging to detect abnormalities on mammograms</li>
+                        <li>Higher risk of hiding small masses</li>
+                        <li>May benefit from additional screening methods</li>
+                        <li>Slightly higher risk factor for breast cancer</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-8 p-4 bg-primary-50 rounded-lg">
+                <p class="text-gray-700 text-center">
+                    <i class="fas fa-info-circle text-primary-500 mr-2"></i>
+                    <strong>Medical Disclaimer:</strong> This tool is for informational purposes only and is not
+                    intended to replace professional medical advice, diagnosis, or treatment. Always consult with a
+                    qualified healthcare provider for medical guidance.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const uploadContainer = document.querySelector('.upload-container');
+        const fileInput = document.getElementById('file-upload');
+        const filePreview = document.querySelector('.file-preview');
+        const filename = document.querySelector('.filename');
+        const imagePreview = document.getElementById('image-preview');
+        const dicomNotice = document.getElementById('dicom-notice');
+        const fileIcon = document.querySelector('.file-icon');
+        const removeFileButton = document.querySelector('.remove-file');
+        const submitButton = document.getElementById('submit-button');
+        const previewButton = document.getElementById('preview-button');
+        const form = document.querySelector('form');
+        const loadingOverlay = document.getElementById('loading-overlay');
+
+        // Store uploaded file for potential preview
+        let uploadedFile = null;
+
+        // Handle drag and drop events
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, preventDefaults, false);
         });
 
-        // Initial check
-        toggleParams();
-    </script>
-</body>
-</html>
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
 
+        // Highlight drop area when dragging over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            uploadContainer.classList.add('border-primary-400', 'bg-primary-50');
+        }
+
+        function unhighlight() {
+            uploadContainer.classList.remove('border-primary-400', 'bg-primary-50');
+        }
+
+        // Handle dropped files
+        uploadContainer.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files.length > 0) {
+                fileInput.files = files;
+                updateFilePreview(files[0]);
+            }
+        }
+
+        // Handle file selection via click
+        uploadContainer.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                updateFilePreview(fileInput.files[0]);
+            }
+        });
+
+        // Remove selected file
+        removeFileButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            resetFileInput();
+        });
+
+        // Preview DICOM file
+        previewButton.addEventListener('click', function () {
+            if (uploadedFile && uploadedFile.name.toLowerCase().endsWith('.dcm')) {
+                // Use the previewDicomFile function to show the preview in a modal
+                previewDicomFile(uploadedFile);
+            }
+        });
+
+
+
+        // Update file preview
+        function updateFilePreview(file) {
+            uploadedFile = file;
+            const validImageTypes = ['image/jpeg', 'image/png'];
+            const isDicom = file.name.toLowerCase().endsWith('.dcm');
+
+            if (!isDicom && !validImageTypes.includes(file.type)) {
+                alert('Please select a valid JPEG, PNG, or DICOM (.dcm) file.');
+                resetFileInput();
+                return;
+            }
+
+            if (file.size > 32 * 1024 * 1024) {
+                alert('File size exceeds 32MB limit. Please choose a smaller file.');
+                resetFileInput();
+                return;
+            }
+
+            filename.textContent = file.name;
+            filePreview.classList.remove('hidden');
+            submitButton.disabled = false;
+            previewButton.disabled = false;
+
+            // Update icon based on file type
+            if (true) {
+                fileIcon.classList.remove('fa-file-image');
+                fileIcon.classList.add('fa-file-medical');
+                imagePreview.classList.add('hidden');
+                dicomNotice.classList.remove('hidden');
+
+                // Show the preview button for DICOM files
+                previewButton.classList.remove('hidden');
+                previewButton.disabled = false;
+            } else {
+                fileIcon.classList.add('fa-file-image');
+                fileIcon.classList.remove('fa-file-medical');
+                dicomNotice.classList.add('hidden');
+                previewButton.classList.add('hidden');
+
+                // Create image preview for non-DICOM files
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Function to preview DICOM file automatically
+        function previewDicomFile(file) {
+            if (file && file.name.toLowerCase().endsWith('.dcm')) {
+                // Create a modal for the preview
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50';
+                modal.id = 'dicom-preview-modal';
+
+                const modalContent = document.createElement('div');
+                modalContent.className = 'bg-white rounded-lg p-6 max-w-3xl w-full max-h-[90vh] overflow-auto';
+
+                const modalHeader = document.createElement('div');
+                modalHeader.className = 'flex justify-between items-center mb-4';
+
+                const modalTitle = document.createElement('h3');
+                modalTitle.className = 'text-xl font-bold text-gray-900';
+                modalTitle.textContent = 'DICOM Preview: ' + file.name;
+
+                const closeButton = document.createElement('button');
+                closeButton.className = 'text-gray-600 hover:text-red-500 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors';
+                closeButton.innerHTML = '<i class="fas fa-times text-xl"></i>';
+                closeButton.title = 'Close preview';
+                closeButton.onclick = function () {
+                    document.body.removeChild(modal);
+                };
+
+                modalHeader.appendChild(modalTitle);
+                modalHeader.appendChild(closeButton);
+
+                const modalBody = document.createElement('div');
+                modalBody.className = 'flex justify-center items-center';
+
+                const loadingSpinner = document.createElement('div');
+                loadingSpinner.className = 'animate-spin rounded-full h-16 w-16 border-t-4 border-primary-500 border-solid';
+
+                modalBody.appendChild(loadingSpinner);
+
+                modalContent.appendChild(modalHeader);
+                modalContent.appendChild(modalBody);
+                modal.appendChild(modalContent);
+
+                document.body.appendChild(modal);
+
+                // Send the file to the dicom_preview endpoint
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch('{{ url_for("dicom_preview") }}', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.preview) {
+                            // Create image element
+                            const img = document.createElement('img');
+                            img.src = 'data:image/png;base64,' + data.preview;
+                            img.alt = 'DICOM Preview';
+                            img.className = 'max-w-full max-h-[70vh] rounded shadow';
+
+                            // Replace loading spinner with image
+                            modalBody.innerHTML = '';
+                            modalBody.appendChild(img);
+
+                            // Add zoom controls
+                            const zoomControls = document.createElement('div');
+                            zoomControls.className = 'mt-4 bg-gray-50 p-4 rounded-lg';
+                            zoomControls.innerHTML = `
+                            <h4 class="text-lg font-medium text-gray-900 mb-2">Image Controls</h4>
+                            <div class="flex items-center space-x-2">
+                                <button class="zoom-btn bg-white py-1 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" data-zoom="0.5">50%</button>
+                                <button class="zoom-btn bg-white py-1 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" data-zoom="1">100%</button>
+                                <button class="zoom-btn bg-white py-1 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" data-zoom="1.5">150%</button>
+                                <button class="zoom-btn bg-white py-1 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" data-zoom="2">200%</button>
+                            </div>
+                        `;
+
+                            modalContent.appendChild(zoomControls);
+
+                            // Add zoom functionality
+                            const zoomButtons = zoomControls.querySelectorAll('.zoom-btn');
+                            zoomButtons.forEach(btn => {
+                                btn.addEventListener('click', function () {
+                                    const zoomLevel = parseFloat(this.getAttribute('data-zoom'));
+                                    img.style.transform = `scale(${zoomLevel})`;
+                                    img.style.transformOrigin = 'center';
+                                    img.style.transition = 'transform 0.2s';
+                                });
+                            });
+
+                            // Add a note about closing
+                            const closeNote = document.createElement('div');
+                            closeNote.className = 'mt-4 text-center text-gray-500 text-sm';
+                            closeNote.innerHTML = 'Click the X in the top-right corner to close this preview';
+                            modalContent.appendChild(closeNote);
+
+                        } else if (data.error) {
+                            modalBody.innerHTML = `
+                            <div class="text-red-500 text-center">
+                                <i class="fas fa-exclamation-circle text-3xl mb-2"></i>
+                                <p>${data.error}</p>
+                            </div>
+                        `;
+                        }
+                    })
+                    .catch(error => {
+                        modalBody.innerHTML = `
+                        <div class="text-red-500 text-center">
+                            <i class="fas fa-exclamation-circle text-3xl mb-2"></i>
+                            <p>Error loading preview: ${error.message}</p>
+                        </div>
+                    `;
+                    });
+            }
+        }
+
+        // Reset file input
+        function resetFileInput() {
+            fileInput.value = "";
+            filePreview.classList.add('hidden');
+            submitButton.disabled = true;
+            previewButton.classList.add('hidden');
+            previewButton.disabled = true;
+            uploadedFile = null;
+        }
+
+        // Show loading overlay on form submission
+        form.addEventListener('submit', function () {
+            if (fileInput.files.length > 0) {
+                loadingOverlay.classList.remove('hidden');
+            }
+        });
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.querySelector('.mobile-menu-button');
+        const mobileMenu = document.querySelector('.mobile-menu');
+
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', function () {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+    });
+</script>
+{% endblock %}
